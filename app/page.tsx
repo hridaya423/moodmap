@@ -2,8 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
-  Globe, TrendingUp, Users, ArrowRight, Github, 
-  Twitter, Menu, X, Share2, ChartArea 
+  Globe, TrendingUp, Users, ArrowRight, Github, Menu, X, Share2, ChartArea 
 } from 'lucide-react';
 import MapPreview from '@/components/preview';
 
@@ -252,12 +251,10 @@ export default function LandingPage() {
             <img src="/logo.png" className='w-24' />
             </div>
             <div className="flex items-center justify-center space-x-6">
-              <a href="#" className="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-50 rounded-full">
+              <a href="https://github.com/hridaya423/moodmap" className="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-50 rounded-full">
                 <Github className="w-5 h-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-50 rounded-full">
-                <Twitter className="w-5 h-5" />
-              </a>
+              
             </div>
             <div className="text-sm text-gray-500">
               © 2024 MoodMap. All rights reserved.
