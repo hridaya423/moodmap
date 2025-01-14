@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Mood Scope",
+  title: "MoodMap",
   description: "Visualize global emotions and trends with dynamic, sentiment heatmaps.",
 };
 
