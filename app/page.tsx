@@ -37,7 +37,6 @@ export default function LandingPage() {
       </div>
 
       <div className="fixed inset-0 pointer-events-none -z-5">
-        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-teal-500 rounded-full animate-float" />
       </div>
 
       <nav className={`fixed w-full z-50 transition-all duration-500 ${
