@@ -263,7 +263,7 @@ const MoodMap: React.FC<MoodMapProps> = ({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <span className="text-2xl">MoodMap</span>
-            <span className="text-sm text-gray-500">Global Sentiment Analysis</span>
+            <span className="text-sm text-gray-500">Scroll down for more data, to zoom Ctrl/Cmd + Scroll</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
