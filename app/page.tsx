@@ -132,7 +132,7 @@ export default function LandingPage() {
                 </div>
                 <div className="flex items-center">
                   <Share2 className="w-5 h-5 mr-2" />
-                  <span>195+ Countries</span>
+                  <span>152+ Countries</span>
                 </div>
               </div>
             </div>
