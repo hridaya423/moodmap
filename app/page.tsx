@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
-  Globe, TrendingUp, Users, ArrowRight, Github, Menu, X, Share2, ChartArea 
+  Globe, TrendingUp, Users, ArrowRight, Github, 
+  Twitter, Menu, X, Share2, ChartArea 
 } from 'lucide-react';
 import MapPreview from '@/components/preview';
 
@@ -34,9 +35,6 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(59,130,246,0.1),transparent)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_70%,rgba(16,185,129,0.1),transparent)]" />
         <div className="absolute inset-0 bg-white/50 backdrop-blur-3xl" />
-      </div>
-
-      <div className="fixed inset-0 pointer-events-none -z-5">
       </div>
 
       <nav className={`fixed w-full z-50 transition-all duration-500 ${
@@ -250,10 +248,12 @@ export default function LandingPage() {
             <img src="/logo.png" className='w-24' />
             </div>
             <div className="flex items-center justify-center space-x-6">
-              <a href="https://github.com/hridaya423/moodmap" className="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-50 rounded-full">
+              <a href="#" className="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-50 rounded-full">
                 <Github className="w-5 h-5" />
               </a>
-              
+              <a href="#" className="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-50 rounded-full">
+                <Twitter className="w-5 h-5" />
+              </a>
             </div>
             <div className="text-sm text-gray-500">
               © 2024 MoodMap. All rights reserved.

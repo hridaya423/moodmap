@@ -9,6 +9,7 @@ import {
   MapPin, TrendingUp, Share2
 } from 'lucide-react';
 import type { SentimentData, FilterOptions } from '@/types';
+import AIInsights from '@/components/aianalysis';
 
 const ALL_COUNTRIES = [
   'Afghanistan', 'Albania', 'Algeria', 'Angola', 'Argentina', 'Armenia', 'Australia', 
@@ -359,6 +360,10 @@ export default function SentimentPage() {
                 <h3 className="text-gray-500">{stat.title}</h3>
               </div>
             ))}
+            <AIInsights
+              sentimentData={sentimentData}
+              loading={loading}
+            />
           </div>
         </div>
       </div>

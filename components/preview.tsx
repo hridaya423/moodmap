@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from 'react';
 import {
   ComposableMap,
   Geographies,
   Geography,
-  ZoomableGroup,
 } from "react-simple-maps";
 
 interface Position {
@@ -28,9 +28,7 @@ interface GeographyFeature {
     [key: string]: any;
   };
 }
-
 const geoUrl = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
-
 const DEMO_POSITIONS: Position[] = [
   { coordinates: [0, 0], zoom: 1, label: 'Global' },
   { coordinates: [15, 50], zoom: 4, label: 'Regional' },
@@ -48,12 +46,12 @@ const DEMO_SENTIMENT: SentimentData = {
   'Australia': 0.5,
   'Brazil': 0.2,
   'India': 0.1,
-  'Russia': -0.2
+  'Russia': -0.2,
+  'Portugal': 0.9
 };
 
 const MapPreview: React.FC<MapPreviewProps> = ({ activeFeature }) => {
   const [position, setPosition] = useState<Position>(DEMO_POSITIONS[0]);
-
   useEffect(() => {
     setPosition(DEMO_POSITIONS[activeFeature]);
   }, [activeFeature]);
@@ -75,13 +73,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({ activeFeature }) => {
           scale: 147
         }}
       >
-        <ZoomableGroup
-          zoom={position.zoom}
-          center={position.coordinates}
-          maxZoom={8}
-          minZoom={1}
-          translateExtent={[[-180, -90], [180, 90]]}
-        >
+      
           <Geographies geography={geoUrl}>
             {({ geographies }) =>
               geographies.map((geo: GeographyFeature) => {
@@ -110,7 +102,6 @@ const MapPreview: React.FC<MapPreviewProps> = ({ activeFeature }) => {
               })
             }
           </Geographies>
-        </ZoomableGroup>
       </ComposableMap>
     </div>
   );

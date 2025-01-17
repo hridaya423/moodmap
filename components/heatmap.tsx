@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import {
   ComposableMap,
   Geographies,
@@ -14,11 +14,21 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
-import { Position } from '@/types';
 
 const geoUrl = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
 
-const CONTINENT_COORDINATES: { [key: string]: { coordinates: [number, number]; zoom: number } } = {
+interface Position {
+  coordinates: [number, number];
+  zoom: number;
+  transition?: boolean;
+}
+
+interface ContinentCoordinates {
+  coordinates: [number, number];
+  zoom: number;
+}
+
+const CONTINENT_COORDINATES: Record<string, ContinentCoordinates> = {
   'North America': { coordinates: [-100, 40], zoom: 2 },
   'South America': { coordinates: [-60, -15], zoom: 2 },
   'Europe': { coordinates: [15, 50], zoom: 4 },
@@ -27,7 +37,7 @@ const CONTINENT_COORDINATES: { [key: string]: { coordinates: [number, number]; z
   'Oceania': { coordinates: [130, -20], zoom: 3 }
 };
 
-const COUNTRY_COORDINATES: { [key: string]: { coordinates: [number, number]; zoom: number } } = {
+const COUNTRY_COORDINATES: Record<string, ContinentCoordinates> = {
   'United States': { coordinates: [-95, 40], zoom: 3 },
   'Russia': { coordinates: [90, 65], zoom: 2 },
   'China': { coordinates: [105, 35], zoom: 3 },
@@ -49,20 +59,22 @@ const MOOD_COLORS = {
   NEGATIVE: '#bb6666',
   VERY_NEGATIVE: '#aa0000',
   NO_DATA: '#e5e7eb'
-};
+} as const;
+
+interface RedditData {
+  count: number;
+  subreddits: string[];
+}
+
+interface SentimentData {
+  score: number;
+  sources: {
+    reddit: RedditData;
+  };
+}
 
 interface MoodMapProps {
-  sentimentData: {
-    [key: string]: {
-      score: number;
-      sources: {
-        reddit: {
-          count: number;
-          subreddits: string[];
-        };
-      };
-    };
-  };
+  sentimentData: Record<string, SentimentData>;
   onCountryClick?: (name: string) => void;
   loading?: boolean;
   selectedCountries?: string[];
@@ -76,33 +88,79 @@ const MoodMap: React.FC<MoodMapProps> = ({
   selectedCountries = [],
   selectedContinent = null
 }) => {
-  const [position, setPosition] = useState<Position>({ coordinates: [0, 0], zoom: 1 });
+  const [position, setPosition] = useState<Position>({ 
+    coordinates: [20, 0],
+    zoom: 1 
+  });
   const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const mapRef = useRef<HTMLDivElement>(null);
+  const transitionTimeout = useRef<NodeJS.Timeout>(null);
+  const moveEndTimeout = useRef<NodeJS.Timeout>(null);
+
+  useEffect(() => {
+    const mapElement = mapRef.current;
+    
+    const handleWheel = (event: WheelEvent) => {
+      if (event.ctrlKey || event.metaKey) {
+        event.preventDefault();
+      }
+    };
+
+    if (mapElement) {
+      mapElement.addEventListener('wheel', handleWheel, { passive: false });
+    }
+
+    return () => {
+      if (mapElement) {
+        mapElement.removeEventListener('wheel', handleWheel);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (transitionTimeout.current) {
+        clearTimeout(transitionTimeout.current);
+      }
+      if (moveEndTimeout.current) {
+        clearTimeout(moveEndTimeout.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (isTransitioning) return;
 
-    const updatePosition = async () => {
+    const updatePosition = () => {
       setIsTransitioning(true);
 
-      let newPosition: Position = { coordinates: [0, 0], zoom: 1 };
+      let newPosition: Position = { coordinates: [20, 0], zoom: 1 };
 
       if (selectedContinent && CONTINENT_COORDINATES[selectedContinent]) {
-        newPosition = CONTINENT_COORDINATES[selectedContinent];
+        newPosition = {
+          ...CONTINENT_COORDINATES[selectedContinent],
+          transition: true
+        };
       } else if (selectedCountries.length === 1) {
         const country = selectedCountries[0];
         if (COUNTRY_COORDINATES[country]) {
-          newPosition = COUNTRY_COORDINATES[country];
+          newPosition = {
+            ...COUNTRY_COORDINATES[country],
+            transition: true
+          };
         }
       }
 
-      setPosition(prev => ({
-        ...prev,
-        ...newPosition,
-        transition: true
-      }));
-      setTimeout(() => setIsTransitioning(false), 1000);
+      setPosition(newPosition);
+
+      if (transitionTimeout.current) {
+        clearTimeout(transitionTimeout.current);
+      }
+
+      transitionTimeout.current = setTimeout(() => {
+        setIsTransitioning(false);
+      }, 1000);
     };
 
     updatePosition();
@@ -126,10 +184,19 @@ const MoodMap: React.FC<MoodMapProps> = ({
     return 'Very Negative';
   };
 
-  const handleMoveEnd = (position: Position) => {
-    if (!isTransitioning) {
-      setPosition(position);
+  const handleMoveEnd = (newPosition: Position) => {
+    if (moveEndTimeout.current) {
+      clearTimeout(moveEndTimeout.current);
     }
+
+    moveEndTimeout.current = setTimeout(() => {
+      if (!isTransitioning) {
+        setPosition({
+          coordinates: newPosition.coordinates,
+          zoom: Math.min(Math.max(newPosition.zoom, 1), 8)
+        });
+      }
+    }, 100);
   };
 
   const formatTooltipContent = (countryName: string | null) => {
@@ -200,7 +267,7 @@ const MoodMap: React.FC<MoodMapProps> = ({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="relative h-[600px]">
+          <div ref={mapRef} className="relative h-[600px]">
             <ComposableMap
               projectionConfig={{
                 rotate: [-10, 0, 0],
@@ -215,7 +282,15 @@ const MoodMap: React.FC<MoodMapProps> = ({
                 maxZoom={8}
                 minZoom={1}
                 onMoveEnd={handleMoveEnd}
-                translateExtent={[[-180, -90], [180, 90]]}
+                translateExtent={[[-Infinity, -Infinity], [Infinity, Infinity]]}
+                filterZoomEvent={(element: SVGElement) => {
+                  const evt = element as unknown as { ctrlKey?: boolean; metaKey?: boolean };
+                  return Boolean(evt.ctrlKey || evt.metaKey);
+                }}
+                onMoveStart={() => {
+                  if (!isTransitioning) return;
+                  setIsTransitioning(false);
+                }}
               >
                 <Geographies geography={geoUrl}>
                   {({ geographies }) =>
