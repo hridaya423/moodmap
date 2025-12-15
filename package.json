@@ -20,7 +20,7 @@
     "lucide-react": "^0.556.0",
     "next": "16.0.7",
     "openai": "^6.10.0",
-    "react": "^19.0.0",
+    "react": "^19.2.3",
     "react-dom": "^19.2.1",
     "react-simple-maps": "^3.0.0",
     "sentiment": "^5.0.2",
