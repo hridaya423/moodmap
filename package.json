@@ -19,7 +19,7 @@
     "limiter": "^3.0.0",
     "lucide-react": "^0.561.0",
     "next": "16.0.10",
-    "openai": "^6.13.0",
+    "openai": "^6.15.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-simple-maps": "^3.0.0",
