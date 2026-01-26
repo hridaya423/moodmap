@@ -21,7 +21,7 @@
     "next": "16.1.5",
     "openai": "^6.16.0",
     "react": "^19.2.4",
-    "react-dom": "^19.2.3",
+    "react-dom": "^19.2.4",
     "react-simple-maps": "^3.0.0",
     "sentiment": "^5.0.2",
     "snoowrap": "^1.23.0",
