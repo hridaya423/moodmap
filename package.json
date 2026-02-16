@@ -25,7 +25,7 @@
     "react-simple-maps": "^3.0.0",
     "sentiment": "^5.0.2",
     "snoowrap": "^1.23.0",
-    "tailwind-merge": "^3.4.0",
+    "tailwind-merge": "^3.4.1",
     "tailwindcss-animate": "^1.0.7",
     "twitter-api-v2": "^1.29.0"
   },
